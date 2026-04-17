@@ -1,0 +1,51 @@
+{
+  "name": "AI Native CEO",
+  "short_name": "AI Native CEO",
+  "description": "Курс для руководителей без технического бэкграунда: 100 уроков по AI, LLM, агентам, командам и AI-культуре. Первые 10 уроков бесплатно.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0056D2",
+  "lang": "ru",
+  "dir": "ltr",
+  "categories": ["education", "business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Каталог курсов",
+      "short_name": "Каталог",
+      "description": "Все 17 модулей и 100 уроков",
+      "url": "/?view=catalog",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Мой прогресс",
+      "short_name": "Прогресс",
+      "description": "Пройденные уроки и сертификат",
+      "url": "/?view=progress",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
