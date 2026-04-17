@@ -1349,6 +1349,7 @@ function loadState(){
     done:{},           /* {"c1l1":true, ...} — пройденные уроки */
     quizAnswers:{},    /* {"c1l1-0":1, ...} — ответы на квизы */
     paid:false,        /* куплен ли полный курс */
+    admin:false,       /* админ/владелец — обходит paywall, отображается баннер */
     currentCourse:1,
     currentLesson:1,
     lastSeen:{c:1,l:1},
@@ -1387,6 +1388,7 @@ function globalLessonIndex(courseId, lessonId){
   return 0;
 }
 function isLocked(courseId, lessonId){
+  if(STATE.admin) return false;        /* владелец/админ — полный доступ */
   if(STATE.paid) return false;
   const g = globalLessonIndex(courseId, lessonId);
   return g > FREE_LIMIT;
@@ -1599,8 +1601,9 @@ function courseCardHTML(c){
   const totalInCourse = c.lessons.length;
   const pct = Math.round((doneInCourse/totalInCourse)*100);
   const firstLessonIndex = globalLessonIndex(c.id, c.lessons[0].i);
-  const isFree = firstLessonIndex <= FREE_LIMIT || STATE.paid;
-  const pill = c.free || firstLessonIndex<=FREE_LIMIT ? '<span class="course-card-pill free">Free</span>' : (STATE.paid?'<span class="course-card-pill">Открыто</span>':'<span class="course-card-pill pro">Pro</span>');
+  const isFree = firstLessonIndex <= FREE_LIMIT || STATE.paid || STATE.admin;
+  const hasAccess = STATE.paid || STATE.admin;
+  const pill = c.free || firstLessonIndex<=FREE_LIMIT ? '<span class="course-card-pill free">Free</span>' : (hasAccess?'<span class="course-card-pill">Открыто</span>':'<span class="course-card-pill pro">Pro</span>');
   return `<div class="course-card" onclick="openCourse(${c.id})">
     <div class="course-card-banner"><div class="course-card-emoji">${c.emoji||'📘'}</div><div class="course-card-num">Курс ${c.id}</div></div>
     <div class="course-card-body">
@@ -1928,6 +1931,34 @@ function handlePaymentReturn(){
 }
 
 /* ============================================================
+   АДМИН / OWNER ACCESS
+   ----------------------------------------------------------------
+   Секретный URL: ?owner=AIKAN-CHOCO-MASTER-2026
+   После активации — STATE.admin=true в localStorage навсегда
+   на этом устройстве. isLocked() пропускает админов.
+
+   Команды в DevTools Console:
+     • Активировать вручную:    STATE.admin=true; saveState(); location.reload();
+     • Отозвать доступ:         STATE.admin=false; saveState(); location.reload();
+     • Полный сброс прогресса:  localStorage.removeItem('ai_native_ceo_v1'); location.reload();
+   ============================================================ */
+const OWNER_SECRET = 'AIKAN-CHOCO-MASTER-2026';
+
+function handleOwnerActivation(){
+  const params = new URLSearchParams(location.search);
+  const key = params.get('owner');
+  if(key && key === OWNER_SECRET){
+    STATE.admin = true;
+    saveState();
+    toast('👑 Owner-доступ активирован. Все 100 уроков открыты.', 'success');
+    history.replaceState({}, '', location.pathname);
+  } else if(key){
+    toast('Неверный ключ owner-доступа', 'warn');
+    history.replaceState({}, '', location.pathname);
+  }
+}
+
+/* ============================================================
    PROGRESS / ПРОГРЕСС
    ============================================================ */
 function renderProgress(){
@@ -1975,7 +2006,7 @@ function renderProgress(){
               <div style="height:100%;background:var(--blue);width:${pct}%;transition:width .5s"></div>
             </div>
           </div>
-          ${STATE.paid?'<span class="course-card-pill">Полный доступ</span>':'<button class="btn btn-primary" onclick="showPaywall()">Разблокировать всё за $'+PRICE+'</button>'}
+          ${STATE.admin?'<span class="course-card-pill" style="background:#fef3c7;color:#92400e">👑 Owner</span>':(STATE.paid?'<span class="course-card-pill">Полный доступ</span>':'<button class="btn btn-primary" onclick="showPaywall()">Разблокировать всё за $'+PRICE+'</button>')}
         </div>
 
         ${certBlock}
@@ -2160,6 +2191,7 @@ document.getElementById('co-card').addEventListener('input', function(e){
    СТАРТ
    ============================================================ */
 updateGlobalProgress();
+handleOwnerActivation();      /* проверяем ?owner=AIKAN-CHOCO-MASTER-2026 → STATE.admin=true */
 handlePaymentReturn();        /* проверяем ?paid=1 / ?cancel=1 от провайдера */
 
 /* Поддержка ссылок на конкретные view: ?view=catalog|progress|resources */
