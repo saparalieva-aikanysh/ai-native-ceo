@@ -405,8 +405,8 @@ img{max-width:100%;display:block}
     <button class="modal-close" onclick="closeModal('paywall')">×</button>
     <div class="modal-head">
       <div class="lock-ic">🔑</div>
-      <h3>Доступ по приглашению</h3>
-      <p>Полный курс — бесплатно для приглашённых.</p>
+      <h3>Открыть полный доступ</h3>
+      <p>Выбери, как хочешь получить доступ к курсу.</p>
     </div>
     <div class="modal-body">
       <ul>
@@ -417,15 +417,20 @@ img{max-width:100%;display:block}
         <li>План 3 горизонтов — рабочий инструмент для CEO</li>
         <li>Сертификат по завершении</li>
       </ul>
-      <div class="modal-price" style="background:#F0F9FF;border:1px solid #BAE6FD">
-        <div class="big" style="color:#0369A1;font-size:20px;line-height:1.4">Введи email,<br>на который получил(а) приглашение</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px">
+        <div style="border:2px solid #BAE6FD;background:#F0F9FF;border-radius:12px;padding:16px 18px">
+          <div style="font-size:15px;font-weight:700;color:#0369A1;margin-bottom:4px">🎟 У меня есть приглашение</div>
+          <div style="font-size:13px;color:#475569;margin-bottom:12px">Бесплатный доступ, если твой email в списке приглашённых.</div>
+          <button class="btn btn-primary" style="width:100%" onclick="openAccess()">Войти по email</button>
+        </div>
+        <div style="border:2px solid #E2E8F0;background:#fff;border-radius:12px;padding:16px 18px">
+          <div style="font-size:15px;font-weight:700;color:#0F172A;margin-bottom:4px">💳 Купить доступ — $100</div>
+          <div style="font-size:13px;color:#475569;margin-bottom:12px">Полный курс навсегда. Оплата картой.</div>
+          <button class="btn btn-primary" style="width:100%;background:#0F172A" onclick="openCheckout()">Оплатить $100</button>
+        </div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary btn-big" onclick="openAccess()">Войти по email</button>
-      <button class="btn btn-ghost" onclick="closeModal('paywall')">Пока нет, вернусь позже</button>
-    </div>
-    <div class="modal-foot">Нет приглашения? Напиши на <a href="mailto:saparalieva.a@choco.kz" style="color:#0056D2">saparalieva.a@choco.kz</a></div>
+    <div class="modal-foot">Нет приглашения и есть вопросы? Напиши на <a href="mailto:saparalieva.a@choco.kz" style="color:#0056D2">saparalieva.a@choco.kz</a></div>
   </div>
 </div>
 
@@ -5602,7 +5607,7 @@ function renderHome(){
               <li>Сертификат и бейдж «AI Native CEO»</li>
               <li>Все будущие обновления курса</li>
             </ul>
-            <button class="btn btn-primary btn-big" onclick="showPaywall()">Купить за $${PRICE}</button>
+            <button class="btn btn-primary btn-big" onclick="openCheckout()">Купить за $${PRICE}</button>
           </div>
         </div>
       </div>
@@ -5648,7 +5653,7 @@ function renderHome(){
     <footer class="footer">
       <div class="footer-inner">
         <div><h4>AI Native CEO</h4><p style="margin:0;opacity:.7">Курс для руководителей, которые хотят вести AI-трансформацию, а не отставать.</p></div>
-        <div><h4>Курс</h4><a onclick="nav('catalog')">Каталог</a><a onclick="openLesson(1,1)">Начать бесплатно</a><a onclick="showPaywall()">Полный доступ $${PRICE}</a></div>
+        <div><h4>Курс</h4><a onclick="nav('catalog')">Каталог</a><a onclick="openLesson(1,1)">Начать бесплатно</a><a onclick="openCheckout()">Полный доступ $${PRICE}</a></div>
         <div><h4>Контакты</h4><a>support@ainativeceo.com</a><a>Telegram: @ainativeceo</a></div>
       </div>
       <div style="max-width:1200px;margin:32px auto 0;border-top:1px solid rgba(255,255,255,.1);padding-top:24px;text-align:center;opacity:.5;font-size:12px">© 2026 AI Native CEO. Все права защищены. Курс распространяется в образовательных целях.</div>
@@ -6314,7 +6319,7 @@ function renderProgress(){
               <div style="height:100%;background:var(--blue);width:${pct}%;transition:width .5s"></div>
             </div>
           </div>
-          ${STATE.admin?'<span class="course-card-pill" style="background:#fef3c7;color:#92400e">👑 Owner</span>':(STATE.paid?'<span class="course-card-pill">Полный доступ</span>':'<button class="btn btn-primary" onclick="showPaywall()">Разблокировать всё за $'+PRICE+'</button>')}
+          ${STATE.admin?'<span class="course-card-pill" style="background:#fef3c7;color:#92400e">👑 Owner</span>':(STATE.paid?'<span class="course-card-pill">Полный доступ</span>':'<button class="btn btn-primary" onclick="openCheckout()">Купить за $'+PRICE+'</button>')}
         </div>
 
         ${certBlock}
