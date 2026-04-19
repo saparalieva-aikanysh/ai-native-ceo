@@ -392,30 +392,105 @@ img{max-width:100%;display:block}
   <div class="modal">
     <button class="modal-close" onclick="closeModal('paywall')">×</button>
     <div class="modal-head">
-      <div class="lock-ic">🔓</div>
-      <h3>Откройте полный курс</h3>
-      <p>Вы прошли 10 бесплатных уроков. Двигайтесь дальше.</p>
+      <div class="lock-ic">🔑</div>
+      <h3>Доступ по приглашению</h3>
+      <p>Полный курс — бесплатно для приглашённых.</p>
     </div>
     <div class="modal-body">
       <ul>
-        <li>Доступ ко всем <b id="total-lessons-modal">120+</b> урокам</li>
-        <li>Harness Engineering, Context Engineering, Runtime Safety</li>
-        <li>Voice AI, Physical AI, Edge Intelligence</li>
-        <li>10 кейсов реальных компаний (Yum!, GenSpark, NVIDIA)</li>
+        <li>Доступ ко всем <b id="total-lessons-modal">100</b> урокам в 17 модулях</li>
+        <li>Foundation Models, Prompt &amp; Context Engineering, AI-агенты</li>
+        <li>Voice AI, Physical AI, Edge Intelligence, Data Flywheel</li>
+        <li>Кейсы реальных компаний (Klarna, Tesla, NVIDIA, Kaspi)</li>
         <li>План 3 горизонтов — рабочий инструмент для CEO</li>
         <li>Сертификат по завершении</li>
-        <li>Пожизненный доступ и все обновления</li>
       </ul>
-      <div class="modal-price">
-        <div class="big"><small>$</small>20</div>
-        <div class="sub">Разовый платёж. Без подписки.</div>
+      <div class="modal-price" style="background:#F0F9FF;border:1px solid #BAE6FD">
+        <div class="big" style="color:#0369A1;font-size:20px;line-height:1.4">Введи email,<br>на который получил(а) приглашение</div>
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-primary btn-big" onclick="openCheckout()">Разблокировать за $20</button>
+      <button class="btn btn-primary btn-big" onclick="openAccess()">Войти по email</button>
       <button class="btn btn-ghost" onclick="closeModal('paywall')">Пока нет, вернусь позже</button>
     </div>
-    <div class="modal-foot">Оплата защищена. 14 дней гарантии возврата.</div>
+    <div class="modal-foot">Нет приглашения? Напиши на <a href="mailto:saparalieva.a@choco.kz" style="color:#0056D2">saparalieva.a@choco.kz</a></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="access">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('access')">×</button>
+    <div class="modal-head">
+      <div class="lock-ic">✉️</div>
+      <h3>Вход в курс</h3>
+      <p>Введи email, на который получил(а) приглашение</p>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="access-email" placeholder="you@company.com" autocomplete="email">
+      </div>
+      <div id="access-hint" style="margin-top:14px;font-size:14px;line-height:1.5;min-height:20px"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-big" onclick="checkAccess()">Войти</button>
+      <button class="btn btn-ghost" onclick="closeModal('access')">Отмена</button>
+    </div>
+    <div class="modal-foot">Нет доступа? Напиши на <a href="mailto:saparalieva.a@choco.kz" style="color:#0056D2">saparalieva.a@choco.kz</a> — пришлём приглашение.</div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="admin-panel">
+  <div class="modal" style="max-width:620px">
+    <button class="modal-close" onclick="closeModal('admin-panel')">×</button>
+    <div class="modal-head">
+      <div class="lock-ic">👑</div>
+      <h3>Админ-панель</h3>
+      <p>Управление доступом к курсу</p>
+    </div>
+    <div class="modal-body">
+      <div class="field" style="margin-bottom:18px">
+        <label style="font-weight:600">Добавить email</label>
+        <div style="display:flex;gap:8px">
+          <input type="email" id="admin-new-email" placeholder="ivan.petrov@company.kz" style="flex:1" autocomplete="off">
+          <button class="btn btn-primary" onclick="addAllowedEmail()" style="white-space:nowrap">Добавить</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#475569;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+          <span>Приглашённые: <span id="admin-count">0</span></span>
+          <span id="admin-changes" style="color:#F59E0B;font-weight:500;font-size:12px"></span>
+        </div>
+        <div id="admin-list" style="max-height:260px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:8px;padding:6px;background:#F8FAFC"></div>
+      </div>
+
+      <details style="margin-bottom:14px;font-size:13px">
+        <summary style="cursor:pointer;color:#475569;font-weight:600;padding:6px 0;user-select:none">⚙️ Настройка GitHub-токена</summary>
+        <div style="padding:12px;background:#FEF9E7;border:1px solid #FDE68A;border-radius:8px;margin-top:8px">
+          <p style="margin:0 0 10px;font-size:12px;line-height:1.55;color:#92400E">
+            Нужен Personal Access Token с правом <b>Contents: Write</b> для репозитория <code>ai-native-ceo</code>.<br>
+            Токен хранится <b>только в твоём браузере</b> (localStorage), никуда не отправляется.<br>
+            <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:#0056D2">Создать токен →</a>
+          </p>
+          <div class="field" style="margin:0">
+            <input type="password" id="admin-gh-token" placeholder="github_pat_..." autocomplete="off">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-ghost" onclick="saveAdminToken()" style="flex:1">Сохранить токен</button>
+            <button class="btn btn-ghost" onclick="clearAdminToken()">Очистить</button>
+          </div>
+          <div id="admin-token-status" style="margin-top:8px;font-size:12px"></div>
+        </div>
+      </details>
+
+      <div id="admin-save-status" style="font-size:13px;min-height:18px;margin-bottom:8px;line-height:1.5"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-big" onclick="publishWhitelist()">💾 Сохранить на сайте</button>
+      <button class="btn btn-ghost" onclick="closeModal('admin-panel')">Закрыть</button>
+    </div>
+    <div class="modal-foot">После сохранения сайт обновится автоматически за ~30-60 секунд.</div>
   </div>
 </div>
 
@@ -447,6 +522,8 @@ img{max-width:100%;display:block}
 </div>
 
 <div class="sidebar-backdrop" id="side-backdrop" onclick="toggleSidebar(false)"></div>
+
+<button id="admin-fab" onclick="openAdminPanel()" style="display:none;position:fixed;right:20px;bottom:20px;background:#1E293B;color:#FFD700;border:none;padding:12px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,0.25);font-size:14px;font-weight:600;cursor:pointer;z-index:90;align-items:center;gap:6px" title="Админ-панель (только для владельца курса)">👑 Админка</button>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -4187,74 +4264,75 @@ p:"Audit + migration plan за 60 дней. День 1-15: список всех
 ]},
 
 {id:14,t:"Data Flywheel и Self-Evolving Systems",emoji:"🔄",free:false,desc:"Маховик данных, синтетические данные, grader-модели, непрерывное улучшение.",lessons:[
-{i:84,t:"Data Flywheel: главный источник defensibility для AI-продуктов",d:11,
-a:"В 1880-х годах Джон Рокфеллер построил Standard Oil на принципе вертикальной интеграции: кто контролирует нефть от скважины до заправки, тот доминирует. Сегодня нефть эпохи AI — данные. Но это не просто «у кого больше данных, тот победил». Реальное преимущество у компаний, которые построили data flywheel — самоусиливающийся цикл, где каждое взаимодействие пользователя делает продукт лучше, привлекает больше пользователей, генерирует ещё больше данных. Это один из самых важных концептов для CEO 2026: если у твоего продукта нет flywheel, ты проиграешь конкуренту, у которого он есть, — даже если сегодня ты впереди по features.",
-c:`<h4>Что такое data flywheel и как его отличить от обычного использования данных</h4>
-<p><strong>Обычное использование данных:</strong> компания собирает аналитику, делает decisions, продукт улучшается через quarterly releases. Это linear process, а не flywheel.</p>
-<p><strong>Data flywheel:</strong> замкнутый self-reinforcing цикл, где данные автоматически улучшают продукт в near-realtime, и каждый оборот делает следующий оборот быстрее. Ключевой критерий — <em>автоматизированность</em> и <em>acceleration</em>.</p>
-<p>Классические 5 шагов:</p>
+{i:84,t:"Маховик данных: главный источник защищённости AI-продукта",d:11,
+a:"Представь обычный качели-маятник во дворе. Чтобы разогнать его с нуля, нужно сильно толкать. Но как только он пошёл — каждый следующий толчок почти ничего не стоит, а амплитуда растёт. В бизнесе работает такой же принцип. Jeff Bezos в 2001 году нарисовал на салфетке схему Amazon: больше покупателей → больше продавцов → шире ассортимент → ниже цены → ещё больше покупателей. Это и есть маховик (flywheel) — замкнутый круг, где каждый оборот делает следующий легче. В 2026 году самый сильный маховик в экономике — это маховик данных: твои пользователи пользуются продуктом, их действия автоматически делают AI умнее, умный AI привлекает новых пользователей, они дают ещё больше данных. Если у твоего конкурента такой маховик есть, а у тебя нет — ты проиграешь, даже если сегодня твой продукт в чём-то лучше. Потому что он улучшается каждый день сам, а твой — только когда ты садишься и пишешь техзадание.",
+c:`<h4>Маховик данных vs обычная работа с данными</h4>
+<p><strong>Обычная работа с данными:</strong> компания собирает цифры в дашборды, раз в квартал смотрит их, принимает решения, обновляет продукт через несколько месяцев. Это линейный процесс — человек между данными и улучшением. Медленно.</p>
+<p><strong>Маховик данных:</strong> автоматический круговорот. Пользователь нажал кнопку → система сама поняла, какой ответ ему понравился, а какой нет → сама обновила модель → уже завтра другим пользователям отвечает лучше. Без собраний, без ТЗ, без релизов. Два ключевых слова — <em>автоматически</em> и <em>с ускорением</em>.</p>
+<p>Пять шагов маховика:</p>
 <ol>
-<li><strong>Пользователи взаимодействуют</strong> с продуктом (клики, запросы, feedback, usage patterns).</li>
-<li><strong>Данные автоматически поступают</strong> в pipeline улучшения модели (не раз в квартал — ежедневно или чаще).</li>
-<li><strong>Модель или система улучшается</strong> (retraining, RLHF, prompt tuning, новые rules).</li>
-<li><strong>Улучшенный продукт</strong> предоставляет лучшую ценность существующим пользователям + привлекает новых через word-of-mouth.</li>
-<li><strong>Больше пользователей генерируют больше данных</strong> → возврат к шагу 1, но с higher quality + volume.</li>
+<li><strong>Пользователи пользуются</strong> продуктом — задают вопросы, нажимают кнопки, лайкают, покупают, уходят, возвращаются.</li>
+<li><strong>Эти действия автоматически попадают</strong> в систему улучшения — не раз в квартал, а каждые несколько часов или минут.</li>
+<li><strong>AI учится</strong> — либо переобучается полностью, либо получает обновлённые инструкции (промпты), либо уточняет правила.</li>
+<li><strong>Продукт становится лучше</strong> — старые пользователи довольнее, рассказывают знакомым, приходят новые.</li>
+<li><strong>Больше пользователей = больше данных</strong> — возвращаемся к шагу 1, но с ещё бóльшим объёмом и более богатой обратной связью.</li>
 </ol>
 
-<h4>Реальные flywheel'ы в action</h4>
+<h4>Живые примеры маховика в 2026</h4>
 <ul>
-<li><strong>Google Search (классический):</strong> каждый click teaches PageRank какие ссылки полезные. За 26 лет Google накопил trillions of search-click pairs, которые невозможно воспроизвести. Bing имеет те же алгоритмы, но не те же data → разница в качестве поиска 25-30%.</li>
-<li><strong>Tesla Autopilot:</strong> 3.5M машин на дорогах → 240B миль данных вождения (на март 2026). Каждая disengagement (когда водитель перехватил управление) — это обучающий signal. Waymo имеет superior technology, но только 1M миль/день → Tesla обгоняет по data volume в 50×.</li>
-<li><strong>ChatGPT:</strong> 500M+ weekly users (Q1 2026). Каждый thumbs up/down + regeneration request = RLHF signal. OpenAI делает continuous fine-tuning на этом feedback. Claude/Gemini не имеют такого объёма interactions → OpenAI сохраняет качественное преимущество в conversational feel.</li>
-<li><strong>Cursor:</strong> 2.8M paying engineers → миллионы accept/reject/edit решений ежедневно. Cursor знает, какие AI-suggestions работают, какие нет, в каком контексте. Copilot отстаёт в качестве suggestions потому что GitHub собирает меньше feedback signal.</li>
-<li><strong>Netflix Recommendations:</strong> 280M subscribers. Каждый play/pause/skip/rate — data point. Netflix recommendation engine улучшается каждый день на уровне модели.</li>
-<li><strong>Kaspi (Казахстан):</strong> 15M active users (Q1 2026), каждая транзакция обучает fraud detection model. Конкуренты (Halyk, Forte) имеют меньше users → им сложнее достичь той же quality в fraud prevention.</li>
+<li><strong>Google Search:</strong> каждый твой клик учит поисковик, какие ссылки полезные. За 26 лет Google накопил триллионы пар «запрос — клик» — такое не купишь ни за какие деньги. У Bing те же алгоритмы, но нет этих данных — и поэтому качество поиска в Bing на 25-30% хуже.</li>
+<li><strong>Tesla Autopilot:</strong> 3,5 млн машин на дорогах проехали в сумме 240 млрд миль к марту 2026. Каждый раз, когда водитель перехватывает руль — это сигнал «здесь автопилот ошибся». Waymo делает технологически более продвинутый автопилот, но у них всего 1 млн миль в день — Tesla обгоняет их по объёму данных в 50 раз. Маховик победил инженерное превосходство.</li>
+<li><strong>ChatGPT:</strong> более 500 млн пользователей в неделю (I квартал 2026). Каждый «палец вверх» или «перегенерировать» — это подсказка OpenAI, какие ответы удачные. Claude и Gemini технологически не хуже, но у них в разы меньше взаимодействий в день — и поэтому ChatGPT ощущается «более естественным» в разговоре.</li>
+<li><strong>Cursor (AI-редактор кода):</strong> 2,8 млн платящих разработчиков. Каждый день они миллионы раз принимают или отклоняют подсказки AI. Cursor знает, какие подсказки работают в каком контексте — в каком языке, при какой задаче, у какого разработчика. GitHub Copilot собирает меньше сигналов — и качество подсказок у него ниже.</li>
+<li><strong>Netflix:</strong> 280 млн подписчиков. Каждое «посмотрел до конца», «выключил на 10-й минуте», «поставил 5 звёзд» — это обучающий сигнал. Рекомендательная система Netflix обновляется каждый день.</li>
+<li><strong>Kaspi (Казахстан):</strong> 15 млн активных пользователей (I квартал 2026). Каждая транзакция обучает систему выявления мошенничества. У конкурентов — Halyk, Forte — пользователей меньше, поэтому их антифрод слабее в реальной жизни, даже если алгоритмы те же.</li>
 </ul>
 
-<h4>Анти-примеры: продукты БЕЗ flywheel</h4>
+<h4>Анти-примеры: продукты БЕЗ маховика</h4>
 <ul>
-<li><strong>Jasper (AI копирайтинг):</strong> оправдана initial traction, но не построили feedback loop. Пользователи генерируют контент и уходят, Jasper не узнаёт качество output'а. Результат: к 2026 лидерство потеряно в пользу Claude/ChatGPT.</li>
-<li><strong>Типичные B2B SaaS AI-add-ons:</strong> встроили GPT-4 в existing product, но не собирают signals об использовании на уровне individual AI-feature. Не-defensible — любой конкурент может встроить тот же API.</li>
-<li><strong>Consulting companies «с AI»:</strong> McKinsey/Deloitte/Accenture продают AI-консалтинг, но not a product → no flywheel. Они зависят от foundation models, которые контролируют OpenAI/Anthropic.</li>
+<li><strong>Jasper</strong> (AI для копирайтинга): в 2023 году был лидером, поднял $125M, оценка $1,5 млрд. Но не построил обратную связь — пользователь сгенерировал текст и ушёл, Jasper не узнал, был ли текст хорош. К 2026 году большинство клиентов ушло в Claude и ChatGPT. Маховика не было — и лидерство испарилось.</li>
+<li><strong>Типичный B2B-сервис, который «добавил AI»:</strong> встроил в свой продукт вызов OpenAI API, поставил галочку «AI inside». Но пользовательские сигналы обратно в модель не идут. Любой конкурент может встроить тот же API и получить то же качество. Конкурентного преимущества нет.</li>
+<li><strong>Консалтинг «с AI»:</strong> McKinsey, Deloitte, Accenture продают консультации по внедрению AI. Это сервис, а не продукт — маховика там нет. Они зависят от моделей, которые принадлежат OpenAI и Anthropic.</li>
 </ul>
 
-<h4>Как построить flywheel в своём продукте: 4 вопроса</h4>
+<h4>Как оценить силу маховика: 4 вопроса CEO</h4>
 <ol>
-<li><strong>Какой feedback signal пользователи естественно генерируют?</strong> Клики, time spent, purchases, edits, thumbs, regenerate requests, support tickets. Чем чаще signal, тем мощнее flywheel.</li>
-<li><strong>Как этот signal автоматически попадает в обучение?</strong> Нужна data pipeline от user interaction → labeled data → model update. Без автоматизации — это не flywheel.</li>
-<li><strong>Как быстро изменения отражаются в продукте?</strong> Cursor обновляет model weights каждые 2-3 недели. Google Search — каждые 2-4 часа (для каких-то частей системы). Slow = weak flywheel.</li>
-<li><strong>Какие экономические барьеры для подражания конкурентами?</strong> Если конкурент может собрать те же данные за 6 месяцев — flywheel weak. Если нужно 5 лет + millions of users — strong.</li>
+<li><strong>Какой сигнал пользователи оставляют естественно, даже не задумываясь?</strong> Клики, время на странице, покупки, правки, лайки/дизлайки, перегенерации, обращения в поддержку. Чем чаще сигнал — тем мощнее маховик.</li>
+<li><strong>Автоматически ли этот сигнал попадает в обучение системы?</strong> Если между действием пользователя и улучшением модели стоит человек с Excel — это не маховик. Нужен автоматический конвейер: действие → очищенные данные → обновление модели → новая версия в продукте.</li>
+<li><strong>Как быстро улучшения возвращаются к пользователю?</strong> Cursor обновляет свои подсказки каждые 2-3 недели. Google Search какие-то части переобучает каждые 2-4 часа. Netflix — каждую ночь. Если у тебя цикл «релиз раз в квартал» — маховик слабый.</li>
+<li><strong>Сколько лет конкуренту нужно, чтобы собрать такой же объём данных?</strong> Если 6 месяцев — маховик слабый, защиты нет. Если 5 лет и миллионы пользователей — это настоящий ров вокруг твоего бизнеса.</li>
 </ol>
 
-<h4>Flywheel для разных типов AI-продуктов</h4>
+<h4>Где какой сигнал собирать в разных типах AI-продуктов</h4>
 <ul>
-<li><strong>Chat/assistant:</strong> feedback через thumbs, regenerate, follow-up questions, conversation length. Пример: Claude.ai, ChatGPT.</li>
-<li><strong>Coding tools:</strong> accept/reject suggestions, edits после AI. Cursor, Copilot.</li>
-<li><strong>Search:</strong> clicks, time-on-result, follow-up queries. Google, Perplexity.</li>
-<li><strong>Content generation:</strong> какие outputs пользователь опубликовал, какие отбросил. Midjourney (public gallery), Runway.</li>
-<li><strong>Voice AI:</strong> escalation к человеку, user cancels, repeat questions. Intercom Fin, Klarna Assistant.</li>
-<li><strong>Recommendations:</strong> plays, rates, skips, adds-to-list. Netflix, Spotify, Amazon.</li>
+<li><strong>Чат-ассистент:</strong> лайк/дизлайк, кнопка «перегенерировать», длина разговора, задал ли пользователь уточняющий вопрос. Пример: Claude.ai, ChatGPT.</li>
+<li><strong>AI для программирования:</strong> принял или отклонил подсказку, сколько потом редактировал. Пример: Cursor, Copilot.</li>
+<li><strong>Поиск:</strong> на какую ссылку кликнул, сколько на ней провёл, задал ли ещё один запрос. Пример: Google, Perplexity.</li>
+<li><strong>Генерация контента:</strong> какие сгенерированные варианты пользователь сохранил, какие удалил, что опубликовал. Пример: Midjourney (публичная галерея), Runway.</li>
+<li><strong>Голосовой AI:</strong> перевёл ли разговор на живого оператора, отменил ли действие, повторил ли тот же вопрос. Пример: Intercom Fin, Klarna Assistant.</li>
+<li><strong>Рекомендации:</strong> досмотрел, поставил оценку, пропустил, добавил в избранное. Пример: Netflix, Spotify, Amazon.</li>
 </ul>
 
-<h4>Главная ошибка CEO: не планировать flywheel с первого дня</h4>
-<p>В 80% стартапов flywheel — afterthought. Компания строит MVP, получает первых users, и только потом пытается «добавить AI learning». В этот момент обычно поздно — data pipeline не спроектирован, feedback signals не собираются, всё нужно переделывать. Правильный подход: <strong>flywheel в product architecture с дня 1</strong>. Для CEO это вопрос, который должен быть на первом design review нового AI-продукта: «Как этот продукт становится лучше, когда пользователи его используют?»</p>
+<h4>Главная ошибка CEO: маховик как «потом добавим»</h4>
+<p>В 80% стартапов маховик — это что-то, о чём думают в последний момент. Схема стандартная: сначала MVP и первые пользователи, потом Product-Market Fit, потом монетизация — и только потом «а давайте теперь добавим обучение на пользовательских данных». В этот момент обычно уже поздно. Потому что архитектура продукта не под это спроектирована: сигналы никто не собирал, инфраструктуры обучения нет, всё надо переделывать с нуля. А конкурент, у которого маховик с первого дня, ушёл на три года вперёд.</p>
+<p>Правильный подход: <strong>маховик заложен в архитектуре с первого дня</strong>. Для CEO это вопрос, который должен задаваться на первом же обсуждении нового AI-продукта: «Как этот продукт становится лучше сам, когда им пользуются?» Если команда не может ответить — продукт ещё не готов к запуску.</p>
 
-<h4>Кейс Notion AI Glean (Mar 2025 launch)</h4>
-<p>Notion перед launch Notion AI Agents (март 2025) провёл 6 месяцев на flywheel architecture. Результат:</p>
+<h4>Кейс Notion AI Agents (запуск март 2025)</h4>
+<p>Notion перед запуском AI-агентов провёл 6 месяцев, перестраивая архитектуру продукта под маховик данных. Что конкретно они сделали и что получили:</p>
 <ul>
-<li>Каждое «accepted» vs «rejected» AI-suggestion — labeled data в realtime pipeline.</li>
-<li>Weekly fine-tuning of prompts на основе последних 7 дней data.</li>
-<li>Monthly retraining of routing model (какой model/prompt для какого запроса).</li>
-<li>Result: quality of AI-suggestions вырос на 38% за первые 6 месяцев без изменения underlying LLM (просто за счёт flywheel improvements).</li>
+<li><strong>Каждое «принял» или «отверг» предложение AI</strong> стало сигналом обучения в реальном времени. Пользователь видит черновик, который AI написал, и либо оставляет (значит, AI угадал), либо переписывает (значит, не угадал). Этот сигнал автоматически попадает в базу примеров.</li>
+<li><strong>Раз в неделю система сама подкручивает промпты</strong> — инструкции для AI — на основе последних 7 дней данных. Если много пользователей отвергли определённый тип подсказки, система корректирует формулировку без вмешательства инженеров.</li>
+<li><strong>Раз в месяц обновляется «маршрутизатор»</strong> — логика, которая решает, какую модель и какую инструкцию использовать для какого типа запроса. Для коротких задач — быструю и дешёвую модель, для сложных — мощную.</li>
+<li><strong>Результат:</strong> за 6 месяцев качество ответов AI, по внутренним оценкам, выросло на 38%. Без смены базовой модели, без новых технологий — только за счёт маховика, который крутится сам.</li>
 </ul>`,
-k:["Data flywheel = self-reinforcing automated цикл: interactions → data → improvement → users → больше data. Linear data use ≠ flywheel","Сильные примеры 2026: Google Search (Bing quality −30%), Tesla Autopilot (Waymo обогнал по data volume в 50×), ChatGPT (500M WAU feedback), Cursor vs Copilot","Анти-примеры без flywheel: Jasper (потерял в пользу Claude), B2B AI-add-ons (не defensible), AI consulting firms","4 вопроса для оценки силы flywheel: какой feedback, automation pipeline, скорость отражения, барьер для копирования","Notion AI после 6 мес flywheel-архитектуры: +38% quality без изменения LLM, только за счёт learning loop"],
+k:["Маховик данных = автоматический круг «пользование → сигнал → улучшение → новые пользователи». Если между сигналом и улучшением стоит человек — это не маховик","Сильные маховики 2026: Google Search (Bing отстаёт на 25-30%), Tesla (обгоняет Waymo по данным в 50×), ChatGPT (500 млн пользователей/неделю), Cursor","Слабые и отсутствующие маховики: Jasper (потерял лидерство), сервисы, просто встроившие чужой AI, консалтинг","Четыре вопроса CEO: какой сигнал собирается естественно? автоматически ли он идёт в обучение? как быстро улучшение доходит до пользователя? сколько лет конкуренту нужно, чтобы догнать?","Notion AI после 6 месяцев перестройки под маховик: +38% качества ответов без смены базовой модели"],
 q:[
-{q:"Что делает data flywheel «маховиком», а не просто сбором данных:",o:["Название","Self-reinforcing automation — каждый оборот ускоряет следующий без manual intervention","Цикличность","Форма"],c:1,e:"Flywheel = автоматизированный цикл, где improvements накапливаются и acceleration растёт. Quarterly data analysis → quarterly feature releases = linear, not flywheel."},
-{q:"Почему Tesla обгоняет Waymo по AI-driving несмотря на более слабую технологию:",o:["Маркетинг","Data volume 50× больше (3.5M машин × 240B миль vs Waymo 1M миль/день)","Elon Musk","Цена"],c:1,e:"Waymo имеет superior core technology, но 50× меньше data. Data flywheel compound'ится — даже слабая starting position с большим data volume со временем обгоняет более сильную с меньшим volume."},
-{q:"Какой продукт не имеет flywheel:",o:["Google Search","Netflix Recommendations","Типичный B2B SaaS add-on с встроенным GPT-4","Cursor"],c:2,e:"Встраивание API не создаёт flywheel. Пользователи генерируют данные, но эти данные не feed'ят обратно в improvement. Любой конкурент с тем же API = same quality."},
-{q:"Главная ошибка CEO в построении flywheel:",o:["Слишком много данных","Flywheel как afterthought — построили MVP, получили users, потом добавляют learning loop. Поздно и нужно переделывать","Не хватает GPU","Не нанимают ML engineers"],c:1,e:"80% стартапов делают эту ошибку. Правильно — flywheel в product architecture с дня 1. CEO должен на первом design review спрашивать: «Как продукт становится лучше, когда пользователи его используют?»"}
+{q:"Что отличает маховик данных от обычной аналитики:",o:["Объём данных","Автоматизация — улучшение продукта происходит без участия человека, и каждый круг ускоряет следующий","Цикличность","Использование AI"],c:1,e:"Маховик = автоматический круговорот. Если ты раз в квартал смотришь дашборды и вручную решаешь, что улучшить — это не маховик, а линейный процесс. Маховик сам ускоряется: вчерашние данные уже улучшили сегодняшний продукт."},
+{q:"Почему Tesla обгоняет Waymo по качеству автопилота, хотя технология Waymo сильнее:",o:["Маркетинг Tesla лучше","У Tesla в 50 раз больше данных: 3,5 млн машин × 240 млрд миль, против 1 млн миль в день у Waymo","Цена машин Tesla ниже","У Tesla больше инженеров"],c:1,e:"Waymo лучше технологически на старте, но объём данных у Tesla в десятки раз больше. Маховик накапливается со временем — даже более слабая начальная позиция с большими объёмами данных со временем обгоняет технологически превосходящего конкурента с меньшим объёмом."},
+{q:"У какого из продуктов маховика данных НЕТ:",o:["Google Search","Netflix","Обычный B2B-сервис, который просто встроил в себя OpenAI API","Cursor"],c:2,e:"Встраивание чужого AI — это не маховик. Пользователи генерируют действия, но эти действия не улучшают модель внутри твоего продукта. Любой конкурент встроит тот же API и получит то же качество. Маховик появляется только если ты собираешь свои сигналы и учишь на них свою логику."},
+{q:"Главная ошибка CEO при построении AI-продукта:",o:["Слишком много данных собирают","Маховик как «добавим потом» — сначала MVP, потом рост, а про обратную связь вспоминают, когда уже поздно переделывать архитектуру","Не хватает вычислительных мощностей","Не наняли ML-инженеров"],c:1,e:"Так ошибаются 80% стартапов. Правильно: на первом же обсуждении любого AI-продукта CEO должен спрашивать — как этот продукт становится лучше сам, когда им пользуются? Если команда не отвечает — продукт ещё не готов."}
 ],
-p:"Flywheel audit + design за 30 дней. День 1-7: для каждого продукта/фичи ответь на 4 вопроса: (1) какой feedback signal пользователи генерируют? (2) как он попадает в обучение? (3) с какой скоростью improvements попадают обратно в продукт? (4) как долго конкуренту нужно собрать те же данные? Сумма = flywheel strength score 0-10. День 8-15: выбери одну слабую область. Спроектируй flywheel improvement. Пример: если у тебя chat-support, и ты ещё не трекаешь thumbs up/down — реализуй это и убедись, что data попадает в prompt-tuning pipeline. День 16-25: выбери один продукт, где flywheel отсутствует полностью. Спроектируй его с нуля. Документируй: signal collection → pipeline → model/prompt update → deploy. Время от user interaction до отражения в продукте должно быть &lt;7 дней. День 26-30: roadmap. Идентифицируй 3 самых важных flywheel проекта на следующие 6 месяцев. Для каждого owner, budget, KPI (не вход, а выход — user-perceived quality improvement за period). Это твоя competitive moat на следующие 3-5 лет."},
+p:"Аудит и проектирование маховика за 30 дней. Неделя 1 (дни 1-7): для каждого твоего продукта или AI-фичи ответь на 4 вопроса — какой сигнал пользователи оставляют естественно? автоматически ли он идёт в обучение? с какой скоростью улучшения доходят обратно до пользователя? сколько лет нужно конкуренту, чтобы собрать такой же объём? Сложи баллы — получишь оценку силы маховика от 0 до 10. Неделя 2 (дни 8-15): выбери одну слабую область и спроектируй улучшение маховика. Пример: если у тебя чат-поддержка, и ты не собираешь лайки/дизлайки на ответы — внедри кнопки и убедись, что эти сигналы автоматически попадают в обновление промптов, а не пылятся в дашборде. Неделя 3 (дни 16-25): выбери один продукт, где маховика нет вообще. Спроектируй его с нуля. Документируй весь путь: где собирается сигнал → как он очищается и попадает в обучение → как обновляется модель или промпт → как обновление выкатывается пользователям. Время от действия пользователя до отражения в продукте должно быть меньше 7 дней. Неделя 4 (дни 26-30): дорожная карта. Выбери 3 самых важных проекта маховика на следующие 6 месяцев. Для каждого назначь ответственного, бюджет и KPI. Важно: KPI должен быть не «сколько собрали данных», а «насколько выросло качество продукта для пользователя за период». Это и есть твой настоящий ров на следующие 3-5 лет."},
 
 {i:85,t:"Синтетические данные: как AI обучает сам себя и почему это meняет economics",d:10,
 a:"В 2022 году Илья Суцкевер (тогда Chief Scientist OpenAI) сказал в интервью: «the internet is running out of fresh text». Интернет содержит около 10 trillion tokens высокого качества — этого хватило для обучения GPT-4, но для GPT-6 и далее нужно больше. Это называется data wall. Ответ индустрии — синтетические данные: AI генерирует данные, на которых обучается следующий AI. Это звучит как рекурсия, но работает благодаря одному trick'у — grader-модели, которая отсекает плохие синтетические данные. Для CEO это важно на трёх уровнях: (1) качество foundation моделей всё больше зависит от synthetic data, (2) твой бизнес может использовать ту же технику для собственных моделей, (3) там, где у тебя мало реальных данных, синтетика — единственный выход.",
@@ -5274,6 +5352,35 @@ const PAYMENT = {
   cancelReturn: '/?cancel=1'
 };
 
+/* ============================================================
+   БЕЛЫЙ СПИСОК ДОСТУПА
+   ----------------------------------------------------------------
+   Загружается из файла whitelist.json в корне сайта.
+   Управление — через встроенную админ-панель (кнопка «👑 Админка»
+   в правом нижнем углу, видна только владельцу курса).
+   Как открыть панель:
+     1. Открой https://ainativeceo.io/?owner=AIKAN-CHOCO-MASTER-2026
+     2. Нажми «👑 Админка» в правом нижнем углу
+     3. Добавляй/удаляй emails и сохраняй — сайт обновится сам.
+   ============================================================ */
+let ACCESS_LIST = ['saparalieva.a@choco.kz'];   /* fallback, пока грузится whitelist.json */
+let ACCESS_LIST_LOADED = false;
+
+async function loadWhitelist(){
+  try{
+    const res = await fetch('whitelist.json?t=' + Date.now(), {cache:'no-store'});
+    if(res.ok){
+      const data = await res.json();
+      const arr = Array.isArray(data) ? data : (data && Array.isArray(data.emails) ? data.emails : []);
+      const cleaned = arr.map(e => (e||'').toString().trim().toLowerCase()).filter(e => e && e.includes('@'));
+      if(cleaned.length){ ACCESS_LIST = cleaned; }
+      ACCESS_LIST_LOADED = true;
+    }
+  } catch(e){
+    console.warn('whitelist load failed, using fallback', e);
+  }
+}
+
 let STATE = loadState();
 
 function loadState(){
@@ -5797,6 +5904,59 @@ function openCheckout(){
   document.getElementById('checkout').classList.add('show');
 }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+/* ============================================================
+   ВХОД ПО EMAIL ИЗ БЕЛОГО СПИСКА
+   ============================================================ */
+function normalizeEmail(e){ return (e||'').trim().toLowerCase(); }
+
+function openAccess(){
+  document.getElementById('paywall').classList.remove('show');
+  document.getElementById('access').classList.add('show');
+  const hint = document.getElementById('access-hint');
+  if(hint){ hint.textContent = ''; hint.style.color = '#64748B'; }
+  setTimeout(()=>{
+    const inp = document.getElementById('access-email');
+    if(inp){ inp.value = ''; inp.focus(); }
+  }, 100);
+}
+
+function checkAccess(){
+  const emailInput = document.getElementById('access-email');
+  const hint = document.getElementById('access-hint');
+  const email = normalizeEmail(emailInput.value);
+
+  if(!email || !email.includes('@') || !email.includes('.')){
+    hint.textContent = 'Введи корректный email (например, name@company.com)';
+    hint.style.color = '#DC2626';
+    return;
+  }
+
+  const allowed = ACCESS_LIST.includes(email);
+
+  if(allowed){
+    STATE.paid = true;
+    STATE.email = email;
+    saveState();
+    closeModal('access');
+    toast('Доступ открыт ✓ Добро пожаловать!', 'success');
+    setTimeout(()=>{
+      if(CURRENT_VIEW==='lesson') openLesson(STATE.currentCourse, STATE.currentLesson);
+      else nav(CURRENT_VIEW);
+    }, 600);
+  } else {
+    hint.innerHTML = 'Этот email не в списке приглашённых.<br>Напиши на <a href="mailto:saparalieva.a@choco.kz?subject=Доступ%20к%20AI%20Native%20CEO&body=Здравствуйте!%20Прошу%20добавить%20мой%20email%20' + encodeURIComponent(email) + '%20в%20список%20приглашённых." style="color:#0056D2;text-decoration:underline">saparalieva.a@choco.kz</a> — пришлём приглашение.';
+    hint.style.color = '#DC2626';
+  }
+}
+
+/* Enter в поле email = нажатие «Войти» */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const inp = document.getElementById('access-email');
+  if(inp){
+    inp.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); checkAccess(); } });
+  }
+});
 function processPayment(){
   const email = document.getElementById('co-email').value.trim();
   const name = document.getElementById('co-name').value.trim();
@@ -5892,7 +6052,194 @@ function handleOwnerActivation(){
     toast('Неверный ключ owner-доступа', 'warn');
     history.replaceState({}, '', location.pathname);
   }
+  updateAdminFab();
 }
+
+function updateAdminFab(){
+  const fab = document.getElementById('admin-fab');
+  if(fab) fab.style.display = STATE.admin ? 'inline-flex' : 'none';
+}
+
+/* ============================================================
+   АДМИН-ПАНЕЛЬ: управление списком доступа
+   ----------------------------------------------------------------
+   Пишет в whitelist.json репозитория через GitHub Contents API.
+   Токен хранится только в localStorage администратора.
+   ============================================================ */
+const GH_OWNER_REPO = 'saparalieva-aikanysh';
+const GH_REPO_NAME  = 'ai-native-ceo';
+const GH_WL_PATH    = 'whitelist.json';
+const TOKEN_KEY     = 'ai_native_gh_token';
+let ADMIN_LIST = [];
+let ADMIN_DIRTY = false;
+
+function openAdminPanel(){
+  if(!STATE.admin){ toast('Только для владельца курса', 'warn'); return; }
+  ADMIN_LIST = ACCESS_LIST.slice();
+  ADMIN_DIRTY = false;
+  renderAdminList();
+  const tokenInput = document.getElementById('admin-gh-token');
+  if(tokenInput) tokenInput.value = localStorage.getItem(TOKEN_KEY) || '';
+  updateAdminTokenStatus();
+  const status = document.getElementById('admin-save-status');
+  if(status) status.textContent = '';
+  document.getElementById('admin-panel').classList.add('show');
+}
+
+function renderAdminList(){
+  const box = document.getElementById('admin-list');
+  const count = document.getElementById('admin-count');
+  const changes = document.getElementById('admin-changes');
+  if(!box) return;
+  if(count) count.textContent = ADMIN_LIST.length;
+  if(changes) changes.textContent = ADMIN_DIRTY ? '● есть несохранённые изменения' : '';
+  if(!ADMIN_LIST.length){
+    box.innerHTML = '<div style="padding:20px;text-align:center;color:#94A3B8;font-size:13px">Пока никого нет. Добавь первый email выше.</div>';
+    return;
+  }
+  box.innerHTML = ADMIN_LIST.map((email, i) =>
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#fff;border-radius:6px;margin-bottom:4px;font-size:13px">'
+    + '<span style="color:#1E293B;word-break:break-all">' + escapeHtml(email) + '</span>'
+    + '<button onclick="removeAllowedEmail(' + i + ')" style="background:transparent;border:none;color:#DC2626;cursor:pointer;font-size:18px;padding:2px 8px;line-height:1" title="Удалить">×</button>'
+    + '</div>'
+  ).join('');
+}
+
+function escapeHtml(s){
+  return (s||'').toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function addAllowedEmail(){
+  const inp = document.getElementById('admin-new-email');
+  const email = normalizeEmail(inp.value);
+  if(!email || !email.includes('@') || !email.includes('.')){
+    toast('Некорректный email', 'warn');
+    return;
+  }
+  if(ADMIN_LIST.includes(email)){
+    toast('Этот email уже в списке', 'warn');
+    return;
+  }
+  ADMIN_LIST.push(email);
+  ADMIN_DIRTY = true;
+  inp.value = '';
+  inp.focus();
+  renderAdminList();
+}
+
+function removeAllowedEmail(i){
+  if(i < 0 || i >= ADMIN_LIST.length) return;
+  const email = ADMIN_LIST[i];
+  if(!confirm('Удалить ' + email + ' из списка?')) return;
+  ADMIN_LIST.splice(i, 1);
+  ADMIN_DIRTY = true;
+  renderAdminList();
+}
+
+function saveAdminToken(){
+  const inp = document.getElementById('admin-gh-token');
+  const token = (inp.value || '').trim();
+  if(!token){ toast('Введи токен', 'warn'); return; }
+  localStorage.setItem(TOKEN_KEY, token);
+  updateAdminTokenStatus();
+  toast('Токен сохранён в этом браузере', 'success');
+}
+
+function clearAdminToken(){
+  localStorage.removeItem(TOKEN_KEY);
+  const inp = document.getElementById('admin-gh-token');
+  if(inp) inp.value = '';
+  updateAdminTokenStatus();
+  toast('Токен удалён', 'success');
+}
+
+function updateAdminTokenStatus(){
+  const el = document.getElementById('admin-token-status');
+  if(!el) return;
+  const saved = localStorage.getItem(TOKEN_KEY);
+  if(saved && saved.length >= 10){
+    el.innerHTML = '<span style="color:#059669">✓ токен сохранён (' + escapeHtml(saved.slice(0,6)) + '••••' + escapeHtml(saved.slice(-4)) + ')</span>';
+  } else {
+    el.innerHTML = '<span style="color:#94A3B8">токен не настроен — сохрани, чтобы публиковать изменения</span>';
+  }
+}
+
+async function publishWhitelist(){
+  const status = document.getElementById('admin-save-status');
+  const token = localStorage.getItem(TOKEN_KEY);
+  if(!token){
+    if(status) status.innerHTML = '<span style="color:#DC2626">Сначала сохрани GitHub-токен в разделе «Настройка» выше.</span>';
+    return;
+  }
+  if(!ADMIN_DIRTY){
+    if(status) status.innerHTML = '<span style="color:#64748B">Изменений нет.</span>';
+    return;
+  }
+  if(status) status.innerHTML = '<span style="color:#0369A1">⏳ Публикация на GitHub...</span>';
+
+  const headers = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+  const api = 'https://api.github.com/repos/' + GH_OWNER_REPO + '/' + GH_REPO_NAME + '/contents/' + GH_WL_PATH;
+
+  try {
+    let currentSha = null;
+    const getRes = await fetch(api + '?ref=main', { headers, cache:'no-store' });
+    if(getRes.status === 200){
+      const getData = await getRes.json();
+      currentSha = getData.sha;
+    } else if(getRes.status !== 404){
+      const errText = await getRes.text();
+      throw new Error('GET ' + getRes.status + ': ' + errText.slice(0, 240));
+    }
+
+    const sortedList = ADMIN_LIST.slice().sort();
+    const fileContent = JSON.stringify(sortedList, null, 2) + '\n';
+    const b64 = btoa(unescape(encodeURIComponent(fileContent)));
+
+    const body = {
+      message: 'chore(access): update whitelist (' + sortedList.length + ' users)',
+      content: b64,
+      branch: 'main'
+    };
+    if(currentSha) body.sha = currentSha;
+
+    const putRes = await fetch(api, { method:'PUT', headers, body: JSON.stringify(body) });
+    if(putRes.status === 200 || putRes.status === 201){
+      const putData = await putRes.json();
+      ACCESS_LIST = sortedList;
+      ADMIN_DIRTY = false;
+      renderAdminList();
+      const shortSha = (putData.commit && putData.commit.sha) ? putData.commit.sha.slice(0,7) : '?';
+      if(status){
+        status.innerHTML = '<span style="color:#059669">✓ Сохранено (коммит <code>' + shortSha + '</code>). Vercel пересобирает сайт — через ~30-60 сек изменения будут на ainativeceo.io.</span>';
+      }
+      toast('Список сохранён ✓', 'success');
+    } else {
+      const errText = await putRes.text();
+      throw new Error('PUT ' + putRes.status + ': ' + errText.slice(0, 300));
+    }
+  } catch(e){
+    const msg = (e && e.message) ? e.message : String(e);
+    if(status) status.innerHTML = '<span style="color:#DC2626">✗ Ошибка: ' + escapeHtml(msg) + '</span>';
+    console.error('publishWhitelist failed', e);
+  }
+}
+
+/* Enter в поле «добавить email» = кнопка «Добавить» */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const inp = document.getElementById('admin-new-email');
+  if(inp){
+    inp.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ e.preventDefault(); addAllowedEmail(); }
+    });
+  }
+});
 
 /* ============================================================
    PROGRESS / ПРОГРЕСС
@@ -6129,6 +6476,7 @@ document.getElementById('co-card').addEventListener('input', function(e){
 updateGlobalProgress();
 handleOwnerActivation();      /* проверяем ?owner=AIKAN-CHOCO-MASTER-2026 → STATE.admin=true */
 handlePaymentReturn();        /* проверяем ?paid=1 / ?cancel=1 от провайдера */
+loadWhitelist();              /* тянем whitelist.json из репозитория */
 
 /* Поддержка ссылок на конкретные view: ?view=catalog|progress|resources */
 const _initParams = new URLSearchParams(location.search);
