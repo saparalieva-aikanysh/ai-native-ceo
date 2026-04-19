@@ -2,7 +2,7 @@
  * Стратегия: cache-first для статики, network-first для index.html.
  * Версионируй CACHE при каждом релизе, чтобы пользователи получили обновления. */
 
-const CACHE = 'ai-native-ceo-v1.0.0';
+const CACHE = 'ai-native-ceo-v1.1.0';
 
 const ASSETS = [
   '/',
@@ -38,6 +38,12 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
+
+  /* whitelist.json — всегда сеть, никогда не кэшируем (админ-панель пишет сюда) */
+  if (url.pathname === '/whitelist.json' || url.pathname.endsWith('/whitelist.json')) {
+    e.respondWith(fetch(req, {cache:'no-store'}).catch(() => new Response('[]', {headers:{'Content-Type':'application/json'}})));
+    return;
+  }
 
   /* HTML — network-first (всегда свежая версия, fallback на кэш если оффлайн) */
   if (req.mode === 'navigate' || req.destination === 'document') {
