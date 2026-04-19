@@ -2,7 +2,7 @@
  * Стратегия: cache-first для статики, network-first для index.html.
  * Версионируй CACHE при каждом релизе, чтобы пользователи получили обновления. */
 
-const CACHE = 'ai-native-ceo-v1.1.0';
+const CACHE = 'ai-native-ceo-v1.1.1';
 
 const ASSETS = [
   '/',
