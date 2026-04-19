@@ -500,7 +500,7 @@ img{max-width:100%;display:block}
     <div class="modal-head">
       <div class="lock-ic">💳</div>
       <h3>Оформление доступа</h3>
-      <p>$20 — полный доступ навсегда</p>
+      <p>$100 — полный доступ навсегда</p>
     </div>
     <div class="modal-body">
       <div class="checkout-grid">
@@ -514,7 +514,7 @@ img{max-width:100%;display:block}
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-primary btn-big" onclick="processPayment()">Оплатить $20</button>
+      <button class="btn btn-primary btn-big" onclick="processPayment()">Оплатить $100</button>
       <button class="btn btn-ghost" onclick="closeModal('checkout')">Отмена</button>
     </div>
     <div class="modal-foot">Демо-платёж. В реальном приложении — Stripe/PayPal.</div>
@@ -5326,7 +5326,7 @@ p:"Твой 90-day Action Plan (критично — не пропусти!). <s
    ============================================================ */
 const STORAGE_KEY = 'ai_native_ceo_v1';
 const FREE_LIMIT = 10;       /* первые 10 уроков — бесплатно */
-const PRICE = 20;            /* USD */
+const PRICE = 100;           /* USD */
 
 /* ============================================================
    ПЛАТЁЖНЫЙ ПРОВАЙДЕР (Kaspi Pay / PayBox / Stripe)
@@ -5347,7 +5347,7 @@ const PAYMENT = {
   mode: 'demo',                          /* 'demo' | 'kaspi' | 'paybox' | 'stripe' */
   payUrl: '',                            /* напр. 'https://pay.kaspi.kz/pay/XXXXXXXX' */
   amount: PRICE,
-  currency: 'USD',                       /* для KZ-провайдера лучше 'KZT' и пересчитать сумму (~9500 KZT) */
+  currency: 'USD',                       /* для KZ-провайдера лучше 'KZT' и пересчитать сумму (~47 500 KZT за $100) */
   successReturn: '/?paid=1',
   cancelReturn: '/?cancel=1'
 };
