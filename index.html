@@ -106,6 +106,18 @@ img{max-width:100%;display:block}
 .sidebar.open.mobile{display:block;position:fixed;top:0;left:0;bottom:0;z-index:200;width:86%;max-width:340px;height:100vh;box-shadow:var(--shadow-lg)}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150}
 .sidebar-backdrop.show{display:block}
+.mobile-menu{display:none;position:fixed;top:0;left:0;bottom:0;width:86%;max-width:320px;background:#fff;z-index:200;padding:18px 12px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18);flex-direction:column;gap:2px}
+.mobile-menu.show{display:flex}
+.mobile-menu-header{display:flex;justify-content:space-between;align-items:center;padding:4px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.mobile-menu-header h3{font-size:17px;font-weight:700;color:#0F172A;margin:0}
+.mobile-menu-close{background:transparent;border:none;font-size:28px;cursor:pointer;color:#94A3B8;padding:0 6px;line-height:1}
+.mobile-menu-link{display:flex;align-items:center;gap:10px;padding:13px 12px;border-radius:8px;text-align:left;font-size:15px;font-weight:500;color:#0F172A;background:transparent;border:none;cursor:pointer;width:100%}
+.mobile-menu-link:hover,.mobile-menu-link.active{background:var(--blue-soft);color:var(--blue)}
+.mobile-menu-link.cta{background:var(--blue);color:#fff;margin-top:6px;justify-content:center;font-weight:600}
+.mobile-menu-link.cta:hover{background:var(--blue);opacity:.9}
+.mobile-menu-divider{height:1px;background:var(--line);margin:10px 0}
+.mobile-menu-section-title{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:6px 12px}
+@media(min-width:960px){.mobile-menu{display:none !important}.hamburger{display:none !important}}
 .sidebar-title{font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px 12px}
 .side-course{margin-bottom:6px;border-radius:8px}
 .side-course-head{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer}
@@ -363,7 +375,7 @@ img{max-width:100%;display:block}
 
 <header class="topbar">
   <div class="topbar-inner">
-    <button class="hamburger" id="btn-hamburger" aria-label="Меню" onclick="toggleSidebar()">
+    <button class="hamburger" id="btn-hamburger" aria-label="Меню" onclick="toggleMobileMenu()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="brand" onclick="nav('home')">
@@ -521,7 +533,20 @@ img{max-width:100%;display:block}
   </div>
 </div>
 
-<div class="sidebar-backdrop" id="side-backdrop" onclick="toggleSidebar(false)"></div>
+<div class="sidebar-backdrop" id="side-backdrop" onclick="toggleSidebar(false); toggleMobileMenu(false);"></div>
+
+<aside class="mobile-menu" id="mobile-menu" aria-label="Мобильное меню">
+  <div class="mobile-menu-header">
+    <h3>AI Native CEO</h3>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu(false)" aria-label="Закрыть">×</button>
+  </div>
+  <button class="mobile-menu-link" id="m-nav-home" onclick="mobileNav('home')">🏠 Главная</button>
+  <button class="mobile-menu-link" id="m-nav-catalog" onclick="mobileNav('catalog')">📚 Каталог</button>
+  <button class="mobile-menu-link" id="m-nav-progress" onclick="mobileNav('progress')">📊 Мой прогресс</button>
+  <button class="mobile-menu-link" id="m-nav-resources" onclick="mobileNav('resources')">🔗 Ресурсы</button>
+  <div class="mobile-menu-divider"></div>
+  <button class="mobile-menu-link cta" onclick="toggleMobileMenu(false); continueLearning();">▶ Продолжить обучение</button>
+</aside>
 
 <button id="admin-fab" onclick="openAdminPanel()" style="display:none;position:fixed;right:20px;bottom:20px;background:#1E293B;color:#FFD700;border:none;padding:12px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,0.25);font-size:14px;font-weight:600;cursor:pointer;z-index:90;align-items:center;gap:6px" title="Админ-панель (только для владельца курса)">👑 Админка</button>
 <div class="toast" id="toast"></div>
@@ -6434,6 +6459,28 @@ function toggleSidebar(force){
 }
 function closeMobileSidebar(){ toggleSidebar(false); }
 function bindSidebarToggle(){/* плэйсхолдер — уже привязали через onclick */}
+
+function toggleMobileMenu(force){
+  const menu = document.getElementById('mobile-menu');
+  const back = document.getElementById('side-backdrop');
+  if(!menu) return;
+  const isOpen = menu.classList.contains('show');
+  const shouldOpen = (force===undefined) ? !isOpen : !!force;
+  menu.classList.toggle('show', shouldOpen);
+  if(back) back.classList.toggle('show', shouldOpen);
+  document.body.style.overflow = shouldOpen ? 'hidden' : '';
+  /* подсветим активный пункт */
+  if(shouldOpen){
+    ['home','catalog','progress','resources'].forEach(v=>{
+      const el = document.getElementById('m-nav-'+v);
+      if(el) el.classList.toggle('active', (typeof STATE!=='undefined' && STATE.view===v));
+    });
+  }
+}
+function mobileNav(view){
+  toggleMobileMenu(false);
+  if(typeof nav==='function'){ nav(view); }
+}
 
 function searchLessons(q){
   q = (q||'').trim().toLowerCase();
